@@ -1,5 +1,5 @@
 {
-  "name": "lambda-helper",
+  "name": "@suppay/lambda-helper",
   "version": "0.0.2",
   "description": "Suppay lambda lambda helper",
   "main": "lib/index.js",
