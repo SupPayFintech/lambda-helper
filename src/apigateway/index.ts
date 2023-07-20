@@ -14,12 +14,6 @@ function getJson(data: string | null) {
   throw new HttpError('The body is not a valid json', 400);
 }
 
-function getEvent<T>(event: APIGatewayEvent, schema: SchemaType): T {
-  const request = getJson(event.body);
-
-  return schema.parse(request) as T;
-}
-
 export type HeadersResponseType =
   | {
       [header: string]: boolean | number | string;
@@ -81,4 +75,22 @@ function responseError(
   );
 }
 
-export default { getEvent, response, responseError };
+function params(event: APIGatewayEvent) {
+  return {
+    getPathParams: <T>(schema: SchemaType): T => {
+      return schema.parse(event.pathParameters) as T;
+    },
+
+    getQueryParams: <T>(schema: SchemaType): T => {
+      return schema.parse(event.queryStringParameters) as T;
+    },
+
+    getBody: <T>(schema: SchemaType): T => {
+      const request = getJson(event.body);
+
+      return schema.parse(request) as T;
+    },
+  };
+}
+
+export default { response, responseError, params };
