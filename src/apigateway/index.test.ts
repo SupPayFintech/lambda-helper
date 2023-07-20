@@ -3,7 +3,7 @@ import { ZodError, z } from 'zod';
 import apiGateWay from '.';
 import { HttpError } from './handler';
 
-describe('getBody', () => {
+describe('body', () => {
   const event = {
     body: JSON.stringify({ name: 'John', age: 30 }),
   } as APIGatewayEvent;
@@ -11,18 +11,18 @@ describe('getBody', () => {
   const schema = z.object({ name: z.string(), age: z.number() });
 
   it('should parse event body and return parsed data', () => {
-    const result = apiGateWay.params(event).getBody(schema);
+    const result = apiGateWay.params(event).body(schema);
     expect(result).toEqual({ name: 'John', age: 30 });
   });
 
   it('should throw an error if the body is not valid JSON', () => {
     event.body = 'invalid json';
-    expect(() => apiGateWay.params(event).getBody(schema)).toThrow('The body is not a valid json');
+    expect(() => apiGateWay.params(event).body(schema)).toThrow('The body is not a valid json');
   });
 
   it('should throw an error if the parsed data does not match the schema', () => {
     event.body = JSON.stringify({ name: 'John' }); // Missing "age" property
-    expect(() => apiGateWay.params(event).getBody(schema)).toThrow(ZodError);
+    expect(() => apiGateWay.params(event).body(schema)).toThrow(ZodError);
   });
 });
 
@@ -95,7 +95,7 @@ describe('responseError', () => {
   });
 });
 
-describe('getPathParams', () => {
+describe('pathParams', () => {
   const event = {
     pathParameters: { userId: '123' },
   } as unknown as APIGatewayEvent;
@@ -103,17 +103,17 @@ describe('getPathParams', () => {
   const schema = z.object({ userId: z.string() });
 
   it('should parse event pathParameters and return parsed data', () => {
-    const result = apiGateWay.params(event).getPathParams(schema);
+    const result = apiGateWay.params(event).pathParams(schema);
     expect(result).toEqual({ userId: '123' });
   });
 
   it('should throw an error if the parsed data does not match the schema', () => {
     event.pathParameters = { userId: 123 } as any; // "userId" should be string
-    expect(() => apiGateWay.params(event).getPathParams(schema)).toThrow(ZodError);
+    expect(() => apiGateWay.params(event).pathParams(schema)).toThrow(ZodError);
   });
 });
 
-describe('getQueryParams', () => {
+describe('queryParams', () => {
   const event = {
     queryStringParameters: { page: '1', limit: '10' },
   } as unknown as APIGatewayEvent;
@@ -121,12 +121,30 @@ describe('getQueryParams', () => {
   const schema = z.object({ page: z.string(), limit: z.string() });
 
   it('should parse event queryStringParameters and return parsed data', () => {
-    const result = apiGateWay.params(event).getQueryParams(schema);
+    const result = apiGateWay.params(event).queryParams(schema);
     expect(result).toEqual({ page: '1', limit: '10' });
   });
 
   it('should throw an error if the parsed data does not match the schema', () => {
     event.queryStringParameters = { page: 1, limit: '10' } as any; // "page" should be string
-    expect(() => apiGateWay.params(event).getQueryParams(schema)).toThrow(ZodError);
+    expect(() => apiGateWay.params(event).queryParams(schema)).toThrow(ZodError);
+  });
+});
+
+describe('headers', () => {
+  const event = {
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer token' },
+  } as unknown as APIGatewayEvent;
+
+  const schema = z.object({ 'Content-Type': z.string(), Authorization: z.string() });
+
+  it('should parse event headers and return parsed data', () => {
+    const result = apiGateWay.params(event).headers(schema);
+    expect(result).toEqual({ 'Content-Type': 'application/json', Authorization: 'Bearer token' });
+  });
+
+  it('should throw an error if the parsed data does not match the schema', () => {
+    event.headers = { 'Content-Type': 'application/json' }; // Missing "Authorization" header
+    expect(() => apiGateWay.params(event).headers(schema)).toThrow(ZodError);
   });
 });

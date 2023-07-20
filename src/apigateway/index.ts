@@ -77,18 +77,22 @@ function responseError(
 
 function params(event: APIGatewayEvent) {
   return {
-    getPathParams: <T>(schema: SchemaType): T => {
+    pathParams: <T>(schema: SchemaType): T => {
       return schema.parse(event.pathParameters) as T;
     },
 
-    getQueryParams: <T>(schema: SchemaType): T => {
+    queryParams: <T>(schema: SchemaType): T => {
       return schema.parse(event.queryStringParameters) as T;
     },
 
-    getBody: <T>(schema: SchemaType): T => {
+    body: <T>(schema: SchemaType): T => {
       const request = getJson(event.body);
 
       return schema.parse(request) as T;
+    },
+
+    headers: <T>(schema: SchemaType): T => {
+      return schema.parse(event.headers) as T;
     },
   };
 }
