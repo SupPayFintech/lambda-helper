@@ -2,7 +2,7 @@
 const Sentry = require('@sentry/serverless');
 import { Context } from 'aws-lambda';
 
-function Lambda(options?: any) {
+function Lambda(options: any = {}) {
   if (process.env.SENTRY_DNS) {
     Sentry.AWSLambda.init({
       dsn: process.env.SENTRY_DNS,
