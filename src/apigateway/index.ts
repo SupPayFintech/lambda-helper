@@ -78,11 +78,11 @@ function responseError(
 function params(event: APIGatewayEvent) {
   return {
     pathParams: <T>(schema: SchemaType): T => {
-      return schema.parse(event.pathParameters) as T;
+      return schema.parse(event.pathParameters || {}) as T;
     },
 
     queryParams: <T>(schema: SchemaType): T => {
-      return schema.parse(event.queryStringParameters) as T;
+      return schema.parse(event.queryStringParameters || {}) as T;
     },
 
     body: <T>(schema: SchemaType): T => {
@@ -92,7 +92,7 @@ function params(event: APIGatewayEvent) {
     },
 
     headers: <T>(schema: SchemaType): T => {
-      return schema.parse(event.headers) as T;
+      return schema.parse(event.headers || {}) as T;
     },
   };
 }
