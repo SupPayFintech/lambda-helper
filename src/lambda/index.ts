@@ -1,8 +1,7 @@
 import Sentry from '@sentry/serverless';
-import { WrapperOptions } from '@sentry/serverless/types/awslambda';
-import { Handler } from 'aws-lambda';
+import { Context } from 'aws-lambda';
 
-function lambda(options?: any) {
+function Lambda(options?: any) {
   if (process.env.SENTRY_DNS) {
     Sentry.AWSLambda.init({
       dsn: process.env.SENTRY_DNS,
@@ -13,13 +12,10 @@ function lambda(options?: any) {
   }
 
   return {
-    handler<TEvent, TResult>(
-      handler: Handler<TEvent, TResult>,
-      wrapOptions?: Partial<WrapperOptions>,
-    ): Handler<TEvent, TResult> {
-      return process.env.SENTRY_DNS ? Sentry.AWSLambda.wrapHandler(handler, wrapOptions) : handler;
+    handler(callback: (event: any, context: Context) => void | Promise<any>) {
+      return process.env.SENTRY_DNS ? Sentry.AWSLambda.wrapHandler(callback) : callback;
     },
   };
 }
 
-export default lambda;
+export default Lambda;

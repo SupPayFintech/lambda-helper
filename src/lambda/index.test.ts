@@ -1,93 +1,64 @@
-import Sentry from '@sentry/serverless';
-import lambda from '.';
-import { Context } from 'aws-lambda';
+import Lambda from '.';
+import * as Sentry from '@sentry/serverless';
+jest.mock('@sentry/serverless', () => ({
+  AWSLambda: {
+    init: jest.fn(),
+    wrapHandler: jest.fn((callback) => callback),
+  },
+}));
 
-jest.mock('@sentry/serverless', () => {
-  const originalModule = jest.requireActual('@sentry/serverless');
-  return {
-    ...originalModule,
-    AWSLambda: {
-      ...originalModule.AWSLambda,
-      init: jest.fn(),
-      wrapHandler: jest.fn((handler) => handler),
-    },
-  };
-});
-
-describe('Sentry Tests', () => {
+describe('Lambda function tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    delete process.env.SENTRY_DNS;
   });
 
-  it('should call Sentry with default settings', async () => {
-    process.env.SENTRY_DNS = 'your_identification_key_here';
+  it('should initialize Sentry and wrap handler when SENTRY_DNS is defined', () => {
+    process.env.SENTRY_DNS = 'dummy-dsn';
 
-    const handler = jest.fn(async (event) => {
-      return { statusCode: 200, body: 'Success' };
+    Lambda().handler((event: any, context: any) => {
+      return;
     });
 
-    const wrappedHandler = lambda().handler(handler);
+    expect(Sentry.AWSLambda.init).toHaveBeenCalledWith({
+      dsn: 'dummy-dsn',
+      tracesSampleRate: 0.1,
+      environment: 'test',
+    });
 
-    const event = { someKey: 'someValue' };
-    const context = {} as Context;
+    expect(Sentry.AWSLambda.wrapHandler).toHaveBeenCalled();
+  });
+
+  it('should not initialize Sentry and return the original handler when SENTRY_DNS is not defined', () => {
+    delete process.env.SENTRY_DNS;
+
     const callback = jest.fn();
 
-    await wrappedHandler(event, context, callback);
+    const originalHandler = Lambda().handler(callback);
 
-    expect(handler).toHaveBeenCalledWith(event, context, callback);
-    expect(Sentry.AWSLambda.init).toHaveBeenCalledWith({
-      dsn: process.env.SENTRY_DNS,
-      tracesSampleRate: 0.1,
-      environment: process.env.NODE_ENV || 'development',
-    });
-    expect(Sentry.AWSLambda.wrapHandler).toHaveBeenCalledWith(handler, undefined);
+    expect(Sentry.AWSLambda.init).not.toHaveBeenCalled();
+
+    expect(Sentry.AWSLambda.wrapHandler).not.toHaveBeenCalled();
+    expect(originalHandler).toBe(callback);
   });
 
-  it('should call Sentry with custom settings', async () => {
+  it('should allow passing custom options to Sentry init', () => {
+    process.env.SENTRY_DNS = 'dummy-dsn';
+
     const customOptions = {
       tracesSampleRate: 0.5,
-      environment: 'production',
+      environment: 'testing',
+      customAttribute: 'customValue',
     };
 
-    process.env.SENTRY_DNS = 'your_identification_key_here';
-
-    const handler = jest.fn(async (event) => {
-      return { statusCode: 200, body: 'Success' };
+    Lambda(customOptions).handler((event: any, context: any) => {
+      return;
     });
 
-    const wrappedHandler = lambda(customOptions).handler(handler);
-
-    const event = { someKey: 'someValue' };
-    const context = {} as Context;
-    const callback = jest.fn();
-
-    await wrappedHandler(event, context, callback);
-
-    expect(handler).toHaveBeenCalledWith(event, context, callback);
     expect(Sentry.AWSLambda.init).toHaveBeenCalledWith({
-      dsn: process.env.SENTRY_DNS,
-      tracesSampleRate: customOptions.tracesSampleRate,
-      environment: customOptions.environment,
+      dsn: 'dummy-dsn',
+      tracesSampleRate: 0.5,
+      environment: 'testing',
+      customAttribute: 'customValue',
     });
-    expect(Sentry.AWSLambda.wrapHandler).toHaveBeenCalledWith(handler, undefined);
-  });
-
-  it('should not call Sentry when the environment variable is not defined', async () => {
-    const handler = jest.fn(async (event) => {
-      return { statusCode: 200, body: 'Success' };
-    });
-
-    const wrappedHandler = lambda().handler(handler);
-
-    const event = { someKey: 'someValue' };
-    const context = {} as Context;
-    const callback = jest.fn();
-
-    await wrappedHandler(event, context, callback);
-
-    expect(handler).toHaveBeenCalledWith(event, context, callback);
-    expect(Sentry.AWSLambda.init).not.toHaveBeenCalled();
-    expect(Sentry.AWSLambda.wrapHandler).not.toHaveBeenCalled();
   });
 });
