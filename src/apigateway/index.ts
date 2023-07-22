@@ -99,8 +99,8 @@ function params(event: APIGatewayEvent) {
       return schema.parse(event.headers || {}) as T;
     },
 
-    files: <T>(schema: SchemaType): T => {
-      return schema.parse(parse(event) || {}) as T;
+    files: <T>(schema: SchemaType): Promise<T> => {
+      return parse(event).then((files) => schema.parse(files) as Promise<T>);
     },
   };
 }
