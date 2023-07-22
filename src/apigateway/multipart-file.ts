@@ -32,7 +32,7 @@ const parse = (event: APIGatewayProxyEvent): Promise<ParsedForm> =>
       (
         fieldname: string,
         file: NodeJS.ReadableStream,
-        { filename, encoding, mimetype }: { filename: string; encoding: string; mimetype: string },
+        { filename, encoding, mimeType }: { filename: string; encoding: string; mimeType: string },
       ) => {
         const uploadFile: UploadFile = {};
         const chunks: Buffer[] = [];
@@ -43,7 +43,7 @@ const parse = (event: APIGatewayProxyEvent): Promise<ParsedForm> =>
 
         file.on('end', () => {
           uploadFile.filename = filename;
-          uploadFile.contentType = mimetype;
+          uploadFile.contentType = mimeType;
           uploadFile.encoding = encoding;
           uploadFile.fieldname = fieldname;
           uploadFile.content = Buffer.concat(chunks);

@@ -21,10 +21,10 @@ describe('Parse function', () => {
       files: [
         {
           content: Buffer.from('Hello World!'),
-          contentType: undefined,
-          encoding: undefined,
+          contentType: 'text/plain',
+          encoding: '7bit',
           fieldname: 'uploadFile1',
-          filename: { encoding: '7bit', filename: 'test.txt', mimeType: 'text/plain' },
+          filename: 'test.txt',
         },
       ],
     });
@@ -53,16 +53,16 @@ describe('Parse function', () => {
 
     expect(extractfields).toEqual([
       {
-        contentType: undefined,
-        encoding: undefined,
+        contentType: 'text/plain',
+        encoding: '7bit',
         fieldname: 'uploadFile1',
-        filename: { encoding: '7bit', filename: 'test.txt', mimeType: 'text/plain' },
+        filename: 'test.txt',
       },
       {
-        contentType: undefined,
-        encoding: undefined,
+        contentType: 'application/octet-stream',
+        encoding: '7bit',
         fieldname: 'uploadFile2',
-        filename: { encoding: '7bit', filename: undefined, mimeType: 'application/octet-stream' },
+        filename: undefined,
       },
     ]);
   });
