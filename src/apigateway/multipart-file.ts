@@ -29,7 +29,11 @@ const parse = (event: APIGatewayProxyEvent): Promise<ParsedForm> =>
 
     busboy.on(
       'file',
-      (fieldname: string, file: NodeJS.ReadableStream, filename: string, encoding: string, mimetype: string) => {
+      (
+        fieldname: string,
+        file: NodeJS.ReadableStream,
+        { filename, encoding, mimetype }: { filename: string; encoding: string; mimetype: string },
+      ) => {
         const uploadFile: UploadFile = {};
         const chunks: Buffer[] = [];
 
