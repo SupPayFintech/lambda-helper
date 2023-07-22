@@ -2,6 +2,10 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError, z } from 'zod';
 import { HttpError } from './handler';
+import parse from './multipart-file';
+
+// All credits go to the created https://github.com/francismeynard/lambda-multipart-parser
+// It was made only an improvement to be performative and current
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type SchemaType = z.ZodObject<{}, 'strip', z.ZodTypeAny, {}, {}>;
@@ -93,6 +97,10 @@ function params(event: APIGatewayEvent) {
 
     headers: <T>(schema: SchemaType): T => {
       return schema.parse(event.headers || {}) as T;
+    },
+
+    files: <T>(schema: SchemaType): T => {
+      return schema.parse(parse(event) || {}) as T;
     },
   };
 }
