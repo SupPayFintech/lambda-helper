@@ -1,6 +1,6 @@
 import logger from './logger';
 import apigateway from './apigateway';
 import clientHttp from './httpClient';
-import config from './config';
+import Config from './config';
 
-export { logger, apigateway, clientHttp, config };
+export { logger, apigateway, clientHttp, Config };
