@@ -7,11 +7,9 @@ interface Config {
 export default (configs: Config, homologConfig?: Config) => {
   return {
     get<T>(path: string, defaultValue?: unknown): T {
-      return get(
-        process.env.NODE_ENV === 'homolog' ? assign(configs, homologConfig || {}) : configs,
-        path,
-        defaultValue,
-      ) as T;
+      const userMerge = !['homolog', 'production'].includes(process.env.NODE_ENV || '');
+
+      return get(userMerge ? assign(configs, homologConfig || {}) : configs, path, defaultValue) as T;
     },
   };
 };
