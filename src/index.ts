@@ -4,5 +4,6 @@ import HTTPClient from './HttpClient';
 import Config from './Config';
 import Lambda from './Lambda';
 import Event from './Event';
+import Z from './Zod';
 
-export { Logger, ApiGateway, HTTPClient, Config, Lambda, Event };
+export { Logger, ApiGateway, HTTPClient, Config, Lambda, Event, Z };
