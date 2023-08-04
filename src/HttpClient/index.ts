@@ -4,14 +4,14 @@ import logger from '../logger';
 type RequestCallback = (request: AxiosRequestConfig) => AxiosRequestConfig;
 type ResponseCallback = (response: AxiosResponse) => AxiosResponse;
 
-const Log = logger(undefined, 'client-http');
+const Log = logger(['http-client']);
 
 export interface ClientHttpConfig extends AxiosRequestConfig {
   requestCallback?: RequestCallback;
   responseCallback?: ResponseCallback;
 }
 
-const clientHttp = (config: ClientHttpConfig): AxiosInstance => {
+const HttpClient = (config: ClientHttpConfig): AxiosInstance => {
   const instance = axios.create(config);
 
   const requestInterceptor = (request: InternalAxiosRequestConfig): any => {
@@ -43,4 +43,4 @@ const clientHttp = (config: ClientHttpConfig): AxiosInstance => {
   return instance;
 };
 
-export default clientHttp;
+export default HttpClient;

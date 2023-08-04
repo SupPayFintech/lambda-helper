@@ -1,6 +1,7 @@
-import logger from './logger';
-import apigateway from './apigateway';
-import clientHttp from './httpClient';
-import Config from './config';
+import Logger from './logger';
+import ApiGateway from './APIGateway';
+import HTTPClient from './HttpClient';
+import Config from './Config';
+import Lambda from './Lambda';
 
-export { logger, apigateway, clientHttp, Config };
+export { Logger, ApiGateway, HTTPClient, Config, Lambda };
