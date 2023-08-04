@@ -4,7 +4,7 @@ import logger from '../logger';
 type RequestCallback = (request: AxiosRequestConfig) => AxiosRequestConfig;
 type ResponseCallback = (response: AxiosResponse) => AxiosResponse;
 
-const Log = logger(['http-client']);
+const Log = logger();
 
 export interface ClientHttpConfig extends AxiosRequestConfig {
   requestCallback?: RequestCallback;
