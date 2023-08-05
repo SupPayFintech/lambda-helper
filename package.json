@@ -1,6 +1,6 @@
 {
   "name": "@suppay/lambda-helper",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Suppay lambda lambda helper",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
