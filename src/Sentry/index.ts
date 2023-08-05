@@ -1,4 +1,5 @@
-import Sentry from '@sentry/serverless';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Sentry = require('@sentry/serverless');
 
 export default (configs: any = {}): any => {
   Sentry.AWSLambda.init({
