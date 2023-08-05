@@ -1,4 +1,4 @@
-import HttpError from '../HttpError';
+import { HttpError } from '../';
 
 describe('HttpError', () => {
   test('Deve criar um HttpError com a mensagem e o statusCode corretos', () => {

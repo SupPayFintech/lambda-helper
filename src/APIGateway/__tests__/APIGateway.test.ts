@@ -1,7 +1,7 @@
 import { APIGatewayEvent } from 'aws-lambda';
 import { ZodError, z } from 'zod';
 import ApiGateWay from '../index';
-import HttpError from '../handler/HttpError';
+import { HttpError } from '../handler';
 
 describe('body', () => {
   const event = {

@@ -1,7 +1,7 @@
 /* eslint-disable no-empty */
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError, z } from 'zod';
-import HttpError from './handler/HttpError';
+import { HttpError } from './handler';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type SchemaType = z.ZodObject<{}, 'strip', z.ZodTypeAny, {}, {}>;
