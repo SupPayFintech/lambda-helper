@@ -1,3 +1,7 @@
+import Logger from '../../logger';
+
+const Log = Logger();
+
 export default class HttpError extends Error {
   statusCode: number;
 
@@ -9,5 +13,7 @@ export default class HttpError extends Error {
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, HttpError);
     }
+
+    Log.error(this, 'http-error');
   }
 }
