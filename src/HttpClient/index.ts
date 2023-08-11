@@ -16,23 +16,23 @@ const HttpClient = (config: ClientHttpConfig): AxiosInstance => {
 
   const requestInterceptor = (request: InternalAxiosRequestConfig): any => {
     const modifiedRequest = config.requestCallback ? config.requestCallback(request) : request;
-    Log.debug('Request:', modifiedRequest);
+    Log.debug(modifiedRequest, 'request');
     return modifiedRequest;
   };
 
   const requestErrorInterceptor = (error: any): Promise<never> => {
-    Log.debug('Request error:', error);
+    Log.error(error, 'request-error');
     return Promise.reject(error);
   };
 
   const responseInterceptor = (response: AxiosResponse): AxiosResponse => {
     const modifiedResponse = config.responseCallback ? config.responseCallback(response) : response;
-    Log.debug('Response:', modifiedResponse);
+    Log.debug(modifiedResponse, 'response');
     return modifiedResponse;
   };
 
   const responseErrorInterceptor = (error: any): Promise<never> => {
-    Log.debug('Response error:', error);
+    Log.error(error, 'response-error');
     return Promise.reject(error);
   };
 
