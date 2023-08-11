@@ -2,6 +2,9 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { ZodError, z } from 'zod';
 import { HttpError } from './handler';
+import Logger from '../logger';
+
+const Log = Logger();
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type SchemaType = z.ZodObject<{}, 'strip', z.ZodTypeAny, {}, {}>;
@@ -62,6 +65,8 @@ function responseError(
       headers,
     );
   }
+
+  Log.error(error, 'response-fatal-error');
 
   return baseResponse(
     {
