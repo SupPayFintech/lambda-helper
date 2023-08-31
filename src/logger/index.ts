@@ -12,13 +12,14 @@ function isEnabled() {
   if (logEnabled === 'OFF' || logEnabled === '0') return false;
 }
 
-function logger(): Logger<pino.LoggerOptions> {
+function logger(configs = {}): Logger<pino.LoggerOptions> {
   const logConfig: pino.LoggerOptions = {
     enabled: isEnabled(),
-    level: process.env.LOG_LEVEL || 'debug',
+    level: process.env.LOG_LEVEL || 'trace',
     base: null,
     timestamp: false,
     transport: isDevelopment ? { target: 'pino-pretty' } : undefined,
+    ...configs,
   };
 
   if (instance) return instance;
