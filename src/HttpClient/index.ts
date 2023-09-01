@@ -33,11 +33,11 @@ const HttpClient = (config: ClientHttpConfig = {}): AxiosInstance => {
 
   const prepareForLogging = (obj: any) => {
     return {
-      url: hideBasicAuthInUrl(obj.url),
-      headers: hideSensitiveInfo(obj.headers, [...(config.hiddenAttributes || []), ...alwaysHiddenAttributes]),
-      method: obj.method,
-      data: obj.data,
-      status: obj.status,
+      url: hideBasicAuthInUrl(obj?.url),
+      headers: hideSensitiveInfo(obj?.headers, [...(config.hiddenAttributes || []), ...alwaysHiddenAttributes]),
+      method: obj?.method,
+      data: obj?.data,
+      status: obj?.status,
     };
   };
 
