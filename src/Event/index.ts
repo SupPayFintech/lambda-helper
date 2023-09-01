@@ -1,6 +1,7 @@
-import { EventBridgeEvent } from 'aws-lambda';
+import { DynamoDBStreamEvent, EventBridgeEvent } from 'aws-lambda';
 
 import { z } from 'zod';
+import { DynamoDBRecord } from 'aws-lambda/trigger/dynamodb-stream';
 
 const BaseSchema = z
   .object({
@@ -20,11 +21,14 @@ const BaseSchema = z
 type SchemaType = z.ZodObject<{}, 'strip', z.ZodTypeAny, {}, {}>;
 
 function Event<TDetailType extends string>(
-  event: EventBridgeEvent<TDetailType, any>,
+  event: EventBridgeEvent<TDetailType, any> | DynamoDBStreamEvent,
   source: string,
   detailType: string,
 ) {
   return {
+    dynamodb(): DynamoDBRecord[] {
+      return (event as DynamoDBStreamEvent).Records;
+    },
     detail(detailSchema?: SchemaType, complete = false) {
       const schema = BaseSchema.extend({
         source: z.literal(source).describe('The source producing the event'),
